@@ -11,5 +11,5 @@ build selenium java:
     - docker build -t $CI_REGISTRY_IMAGE/selenium-openjdk:17.0.2 -f ./containers/Dockerfile-selenium-java .
     - docker push $CI_REGISTRY_IMAGE/selenium-openjdk:17.0.2
   rules:
-  - changes:
+    - changes:
       - containers/Dockerfile-selenium-java
