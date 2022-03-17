@@ -1,8 +1,14 @@
 FROM openjdk:17.0.2-jdk-buster
-
 RUN apt-get update && apt-get install -y \
   wget \
-  sudo
-
+  sudo \
+  bash \
+  zip
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN sudo apt install -y ./google-chrome-stable_current_amd64.deb
+
+RUN wget https://services.gradle.org/distributions/gradle-7.3.1-bin.zip -P /tmp
+RUN sudo unzip -d /opt/gradle /tmp/gradle-*.zip
+ENV GRADLE_HOME=/opt/gradle/gradle-7.3.1
+ENV PATH=${GRADLE_HOME}/bin:${PATH}
+RUN sudo chmod +x /etc/profile.d/gradle.sh
