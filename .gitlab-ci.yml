@@ -1,0 +1,15 @@
+stages:
+  - build-containers
+
+build selenium java:
+  stage: build-containers
+  image: docker
+  services:
+    - docker:19.03.13-dind
+  script:
+    - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/selenium-openjdk:17.0.2 -f ./containers/Dockerfile-selenium-java .
+    - docker push $CI_REGISTRY_IMAGE/selenium-openjdk:17.0.2
+  rules:
+  - changes:
+      - containers/Dockerfile-selenium-java
