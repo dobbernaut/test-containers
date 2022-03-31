@@ -3,13 +3,17 @@ stages:
 
 build selenium java:
   stage: build-containers
-  image: docker
-  services:
-    - docker:19.03.13-dind
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   script:
-    - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/selenium-openjdk:17.0.2 -f ./containers/Dockerfile-selenium-java .
-    - docker push $CI_REGISTRY_IMAGE/selenium-openjdk:17.0.2
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/containers/Dockerfile-selenium-java"
+      --destination "${CI_REGISTRY_IMAGE}/selenium-openjdk:17.0.2"
   rules:
     - changes:
       - containers/Dockerfile-selenium-java
